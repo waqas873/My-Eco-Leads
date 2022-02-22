@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 if ($_SERVER['HTTP_HOST'] == 'localhost') {
-       $config['base_url'] =   $protocol.$_SERVER['HTTP_HOST'].'/dm/';
+       $config['base_url'] =   $protocol.$_SERVER['HTTP_HOST'].'/My-Eco-Leads/';
 }else{
        $config['base_url'] =    $protocol.$_SERVER['HTTP_HOST'].'/';
 }
