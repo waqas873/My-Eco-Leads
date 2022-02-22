@@ -273,7 +273,7 @@ class Leads extends CI_Controller
                 $data['response'] = true;
             }
         }else {
-            $lead_data = "Info. doesn't exit against this lead!";
+            $lead_data = "Info. doesn't exist against this lead!";
             $data['lead_info'] = $lead_data;
             $data['response'] = true;
         }  
