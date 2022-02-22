@@ -239,13 +239,13 @@
             </a>
             <b class="arrow"></b>
           </li>
-          <li class="<?php echo($this->selected_tab == 'api_leads' ? 'active' : ''); ?>">
-            <a href="<?php echo base_url('admin/api_leads/index');?>">
+          <!-- <li class="<?php //echo($this->selected_tab == 'api_leads' ? 'active' : ''); ?>">
+            <a href="<?php //echo base_url('admin/api_leads/index');?>">
               <i class="menu-icon fa fa-list"></i>
               <span class="menu-text"> API Leads </span>
             </a>
             <b class="arrow"></b>
-          </li>
+          </li> -->
           <li class="<?php echo($this->selected_tab == 'invalid_leads' ? 'active' : ''); ?>">
             <a href="<?php echo base_url('admin/leads/invalid_leads');?>">
               <i class="menu-icon fa fa-list"></i>
@@ -260,20 +260,20 @@
             </a>
             <b class="arrow"></b>
           </li>
-          <li class="<?php echo($this->selected_tab == 'apis' ? 'active' : ''); ?>">
-            <a href="<?php echo base_url('admin/apis/');?>">
+          <!-- <li class="<?php //echo($this->selected_tab == 'apis' ? 'active' : ''); ?>">
+            <a href="<?php //echo base_url('admin/apis/');?>">
               <i class="menu-icon fa fa-list"></i>
               <span class="menu-text"> APIs </span>
             </a>
             <b class="arrow"></b>
-          </li>
-          <li class="<?php echo ($this->selected_tab == 'user_apis' ? 'active' : ''); ?>">
-            <a href="<?php echo base_url('admin/user_apis/');?>">
+          </li> -->
+          <!-- <li class="<?php //echo ($this->selected_tab == 'user_apis' ? 'active' : ''); ?>">
+            <a href="<?php //echo base_url('admin/user_apis/');?>">
               <i class="menu-icon fa fa-list"></i>
               <span class="menu-text">Users APIs</span>
             </a>
             <b class="arrow"></b>
-          </li>
+          </li> -->
           <li class="<?php echo ($this->selected_tab == 'phone_numbers' ? 'active' : ''); ?>">
             <a href="<?php echo base_url('admin/phone_numbers/');?>">
               <i class="menu-icon fa fa-list"></i>

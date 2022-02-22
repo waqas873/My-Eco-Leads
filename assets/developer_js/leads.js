@@ -1,8 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     $('.plz_wait').hide();
 
-    $(document).on('change', '.action', function(e) {
+    $(document).on('change', '.action', function (e) {
         var obj = $(this);
         var val = obj.val();
         var lead_id = obj.attr('name');
@@ -13,7 +13,7 @@ $(document).ready(function() {
                 type: "POST",
                 dataType: 'json',
                 data: { 'action': val, 'lead_id': lead_id },
-                success: function(data) {
+                success: function (data) {
                     if (data.response) {
                         if (data.remove_class != '') {
                             obj.removeClass(data.remove_class);
@@ -37,7 +37,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document).on('click', '.lead_info', function(e) {
+    $(document).on('click', '.lead_info', function (e) {
         var lead_id = $(this).attr('rel');
         $('#lead_info').empty();
         if (lead_id != '') {
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 type: "POST",
                 dataType: 'json',
                 data: { 'lead_id': lead_id },
-                success: function(data) {
+                success: function (data) {
                     if (data.response) {
                         $('#lead_info').append(data.lead_info);
                         $('#info_modal').modal('show');
@@ -58,7 +58,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document).on('click', '.view_notes', function(e) {
+    $(document).on('click', '.view_notes', function (e) {
         var lead_id = $(this).attr('rel');
         $('#view_notes').empty();
         if (lead_id != '') {
@@ -68,7 +68,7 @@ $(document).ready(function() {
                 type: "POST",
                 dataType: 'json',
                 data: { 'lead_id': lead_id },
-                success: function(data) {
+                success: function (data) {
                     if (data.response) {
                         $('#view_notes').append(data.view_notes);
                         $('#view_notes_modal').modal('show');
@@ -85,7 +85,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document).on('click', '.remove_note', function(e) {
+    $(document).on('click', '.remove_note', function (e) {
         var note_id = $(this).attr('rel');
         if (note_id != '') {
             $url = base_url + "leads/delete_note";
@@ -94,7 +94,7 @@ $(document).ready(function() {
                 type: "POST",
                 dataType: 'json',
                 data: { 'note_id': note_id },
-                success: function(data) {
+                success: function (data) {
                     if (data.response) {
                         $('#note' + note_id).empty();
                         swal({
@@ -115,7 +115,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document).on('click', '.send_sms', function(e) {
+    $(document).on('click', '.send_sms', function (e) {
         $('#lead_id').val('');
         var lead_id = $(this).attr('rel');
         if (lead_id != '') {
@@ -124,7 +124,7 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '.add_note', function(e) {
+    $(document).on('click', '.add_note', function (e) {
         $('.lead_id').val('');
         var lead_id = $(this).attr('rel');
         if (lead_id != '') {
@@ -133,7 +133,7 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '#note_button', function(e) {
+    $(document).on('click', '#note_button', function (e) {
         $url = base_url + "leads/process_add_note";
         var formData = $('#note_form').serializeArray();
         $('#note_button').hide();
@@ -144,7 +144,7 @@ $(document).ready(function() {
             type: "POST",
             dataType: 'json',
             data: formData,
-            success: function(data) {
+            success: function (data) {
                 $('.csrf_token').val(data.regenerate_token);
                 if (data.response) {
                     $('#note_form').trigger("reset");
@@ -163,7 +163,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '#reply_button', function(e) {
+    $(document).on('click', '#reply_button', function (e) {
         $url = base_url + "chat/process_send_sms";
         var formData = $('#message_form').serializeArray();
         $('#reply_button').hide();
@@ -173,7 +173,7 @@ $(document).ready(function() {
             type: "POST",
             dataType: 'json',
             data: formData,
-            success: function(data) {
+            success: function (data) {
                 $('.csrf_token').val(data.regenerate_token);
                 $('#message_form').trigger("reset");
                 if (data.response) {
@@ -210,7 +210,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.view_conversation', function(e) {
+    $(document).on('click', '.view_conversation', function (e) {
         var lead_id = $(this).attr('rel');
         if (lead_id != '') {
             $url = base_url + "chat/index/" + lead_id;
@@ -228,7 +228,7 @@ $(document).ready(function() {
         "ajax": {
             url: base_url + 'leads/get_leads',
             type: 'POST',
-            "data": function(d) {
+            "data": function (d) {
                 return $.extend({}, d, {
                     "status_filter": $('#status_filter').val(),
                     "from_date": $('#from_date').val(),
@@ -236,7 +236,7 @@ $(document).ready(function() {
                     "to_date": $('#to_date').val()
                 });
             },
-            "dataSrc": function(json) {
+            "dataSrc": function (json) {
                 //Make your callback here.
                 $('#n_leads').empty();
                 $('#n_leads').append(json.data.length);
@@ -268,16 +268,16 @@ $(document).ready(function() {
             { "data": "created_at" }
         ]
     });
-    $(document).on('change', '#status_filter', function(e) {
+    $(document).on('change', '#status_filter', function (e) {
         $('#sample_leads').DataTable().ajax.reload();
     });
-    $(document).on('change', '#from_date', function(e) {
+    $(document).on('change', '#from_date', function (e) {
         $('#sample_leads').DataTable().ajax.reload();
     });
-    $(document).on('change', '#to_date', function(e) {
+    $(document).on('change', '#to_date', function (e) {
         $('#sample_leads').DataTable().ajax.reload();
     });
-    $(document).on('change', '#action_filter', function(e) {
+    $(document).on('change', '#action_filter', function (e) {
         $('#sample_leads').DataTable().ajax.reload();
     });
 

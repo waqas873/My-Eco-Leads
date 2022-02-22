@@ -22,6 +22,7 @@ class Leads extends CI_Controller
 		$this->layout = 'user_dashboard';
 		$this->load->model('users_model', 'users');
 		$this->load->model('leads_model', 'leads');
+		$this->load->model('leads_new_model', 'leads_new');
         $this->load->model('orders_model', 'orders');
         $this->load->model('lead_order_model', 'lead_order');
         $this->load->model('notes_model', 'notes');
@@ -217,19 +218,65 @@ class Leads extends CI_Controller
         $lead_id = $this->input->post('lead_id');
         $where = "lead_id = '".$lead_id."'";
         $result = $this->leads->get_where('*', $where, true, '' , '', '');
-        if(!empty($result)){
-            $lead_info = $result[0]['lead_info'];
-            $lead_info = json_decode($lead_info, true);
+        $leads_new_id = $result[0]['leads_new_id'];
+        if(!empty($leads_new_id)){
             $lead_data = '';
-            foreach($lead_info as $key => $info){
-                $info = str_replace("u00a3","<span>&#163;</span>",$info);
-                $lead_data .= '<span class="question">'.$key.'</span><br/>';
-                $lead_data .= '<span class="answer">'.$info.'</span><br/>';
+            $where1 ="leads_new.id = '".$leads_new_id."'";
+            $result1 = $this->leads_new->get_where('*', $where1, true, '' , '', '');
+            if(!empty($result1)){
+                $lead_info = $result1[0];
+                if(!empty($lead_info['name'])){
+                    $lead_data .= '<span class="question">What is your name?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['name'].'</span><br/>';
+                }
+                if(!empty($lead_info['email'])){
+                    $lead_data .= '<span class="question">What is your email?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['email'].'</span><br/>';
+                }
+                if(!empty($lead_info['phone'])){
+                    $lead_data .= '<span class="question">What is your phone number?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['phone'].'</span><br/>';
+                }
+                if(!empty($lead_info['postal_code'])){
+                    $lead_data .= '<span class="question">What is your postal code?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['postal_code'].'</span><br/>';
+                }
+                if(!empty($lead_info['house_no'])){
+                    $lead_data .= '<span class="question">What is your house number?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['house_no'].'</span><br/>';
+                }
+                if(!empty($lead_info['property_type'])){
+                    $lead_data .= '<span class="question">What is your property type?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['property_type'].'</span><br/>';
+                }
+                if(!empty($lead_info['household_benefits'])){
+                    $lead_data .= '<span class="question">What are your household benefits?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['household_benefits'].'</span><br/>';
+                }
+                if(!empty($lead_info['residential_status'])){
+                    $lead_data .= '<span class="question">What is your residential status?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['residential_status'].'</span><br/>';
+                }
+                if(!empty($lead_info['floor_type'])){
+                    $lead_data .= '<span class="question">What is your floor type?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['floor_type'].'</span><br/>';
+                }
+                if(!empty($lead_info['fuel_type'])){
+                    $lead_data .= '<span class="question">What is your fuel type?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['fuel_type'].'</span><br/>';
+                }
+                if(!empty($lead_info['heating_system'])){
+                    $lead_data .= '<span class="question">What is your heating system age?</span><br/>';
+                    $lead_data .= '<span class="answer">'.$lead_info['heating_system'].'</span><br/>';
+                }
+                $data['lead_info'] = $lead_data;
+                $data['response'] = true;
             }
-            //debug($lead_info,true);
+        }else {
+            $lead_data = "Info. doesn't exit against this lead!";
             $data['lead_info'] = $lead_data;
             $data['response'] = true;
-        }   
+        }  
         echo json_encode($data);
     }
 
