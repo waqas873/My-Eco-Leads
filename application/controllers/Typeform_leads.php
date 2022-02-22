@@ -2,7 +2,6 @@
 
 class Typeform_leads extends CI_Controller 
 {
-	
 	/**
 	* @var stirng
 	* @access Public
@@ -49,6 +48,41 @@ class Typeform_leads extends CI_Controller
 				$this->createLog($this->db->last_query());
 			}
 		}
+	}
+
+	public function saveLead()
+	{
+		$data = [];
+		$data['response'] = false;
+		$data['msg'] = '';
+		if(empty($this->input->post())){
+			$data['response'] = "error";
+		    $data['msg'] = 'Invalid request';
+		    echo json_encode($data); exit;
+		}
+		$formData = $this->input->post();
+		//$formData = ['property_type'=>'hello','floor_type'=>'test'];
+		$save = [];
+		$save['postal_code'] = (!empty($formData['postal_code']))?$formData['postal_code']:'N/A';
+		$save['house_no'] = (!empty($formData['house_no']))?$formData['house_no']:'N/A';
+		$save['name'] = (!empty($formData['name']))?$formData['name']:'N/A';
+		$save['email'] = (!empty($formData['email']))?$formData['email']:'N/A';
+		$save['property_type'] = (!empty($formData['property_type']))?$formData['property_type']:'N/A';
+		$save['household_benefits'] = (!empty($formData['household_benefits']))?$formData['household_benefits']:'N/A';
+		$save['residential_status'] = (!empty($formData['residential_status']))?$formData['residential_status']:'N/A';
+		$save['floor_type'] = (!empty($formData['floor_type']))?$formData['floor_type']:'N/A';
+		$save['fuel_type'] = (!empty($formData['fuel_type']))?$formData['fuel_type']:'N/A';
+		$save['heating_system'] = (!empty($formData['heating_system']))?$formData['heating_system']:'N/A';
+		$save['phone'] = (!empty($formData['phone']))?$formData['phone']:'N/A';
+		if($id = $this->leads_new->save($save)){
+            $data['response'] = "SUCCESS";
+		    $data['msg'] = 'Lead saved successfully';
+		    echo json_encode($data); exit;
+		}
+		$this->createLog($this->db->last_query());
+		$data['response'] = "error";
+	    $data['msg'] = 'Error occured while saving lead';
+	    echo json_encode($data); exit;
 	}
 
 	public function createLog($data = '')
