@@ -75,8 +75,8 @@ var base_url = '<?php echo base_url();?>';
                     </li>
                 </ul>
             </li>
-            <li><a class="<?php echo (isset($this->selected_tab) && $this->selected_tab=='api_leads')?'active':''; ?>" href="<?php echo base_url('api_leads/');?>">API Leads</a></li>
-            <li><a class="<?php echo (isset($this->selected_tab) && $this->selected_tab=='user_api')?'active':''; ?>" href="<?php echo base_url('apis/');?>">APIs</a></li>
+            <!-- <li><a class="<?php //echo (isset($this->selected_tab) && $this->selected_tab=='api_leads')?'active':''; ?>" href="<?php //echo base_url('api_leads/');?>">API Leads</a></li> -->
+            <!-- <li><a class="<?php //echo (isset($this->selected_tab) && $this->selected_tab=='user_api')?'active':''; ?>" href="<?php //echo base_url('apis/');?>">APIs</a></li> -->
             <li><a class="<?php echo (isset($this->selected_tab) && $this->selected_tab=='companies')?'active':''; ?>" href="<?php echo base_url('companies/');?>">My Company</a></li>
             <li><a class="<?php echo (isset($this->selected_tab) && $this->selected_tab=='orders')?'active':''; ?>" href="<?php echo base_url('orders/');?>">Orders</a></li>
             
