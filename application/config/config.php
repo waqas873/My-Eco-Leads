@@ -488,6 +488,7 @@ $config['csrf_exclude_uris'] = array(
         'leads/index',
         'leads/change_action',
         'leads/lead_info',
+        'leads/addresses_info',
         'leads/view_notes',
         'apis/check_api',
         'leads/get_leads',

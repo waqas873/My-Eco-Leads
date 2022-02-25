@@ -58,6 +58,37 @@ $(document).ready(function () {
         return false;
     });
 
+    $(document).on('click', '.view_addresses', function (e) {
+        var lead_id = $(this).attr('rel');
+        $('#address_info').empty();
+        $('.address_body').empty();
+        if (lead_id != '') {
+            var url = base_url + "leads/addresses_info";
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: 'json',
+                data: { 'lead_id': lead_id },
+                success: function (data) {
+                    if (data.response) {
+                        $('#address_info').append(data.address_info);
+                        $('.address_body').append(data.address_table);
+                        $('#addresses_modal').modal('show');
+                    }
+                }
+            });
+        }
+        return false;
+    });
+
+
+    $(document).on('change', '#lead_address', function () {
+        var selValue = $(this).val();
+        alert(selValue);
+    })
+
+
+
     $(document).on('click', '.view_notes', function (e) {
         var lead_id = $(this).attr('rel');
         $('#view_notes').empty();
@@ -257,12 +288,13 @@ $(document).ready(function () {
             { "data": "last_name" },
             { "data": "email" },
             { "data": "contact_mobile" },
-            { "data": "confirm_mobile_number" },
-            { "data": "best_time_to_call" },
+            { "data": "house_no" },
+            { "data": "household_benefits" },
             { "data": "status" },
             { "data": "action" },
             //{ "data": "conversation" },
             { "data": "notes" },
+            { "data": "addresses" },
             { "data": "lead_info" },
             { "data": "lead_appeal" },
             { "data": "created_at" }

@@ -5,6 +5,22 @@
 .filters{
     margin-top: 6px;
 }
+#address_info {
+  text-align: center;
+}
+table, td, th {
+  border: 1px solid #333;
+}
+.addresses {
+  padding: 10px;
+}
+#address_info{
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.modal-dialog{
+  width: 1100px;
+}
 .date_range{
     line-height: 15px !important;
 }
@@ -20,6 +36,12 @@
 }
 .note_des{
   font-size: 18px;
+}
+
+.address-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .ndate{
   font-size: 12px;
@@ -129,9 +151,9 @@
 				<div class="col-md-4 col-sm-4 col-xs-12"> 
 					<div class="value-box no_answer">Total No Answer Leads <b id="no_answer"><?php echo (isset($no_answer))?$no_answer:'' ;?></b> </div>
 				</div>
-				<div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box pack_out">Total Pack Out Leads <b id="pack_out"><?php echo (isset($pack_out))?$pack_out:'' ;?> </b></div>
-				</div>
+				<!-- <div class="col-md-4 col-sm-4 col-xs-12"> 
+					<div class="value-box pack_out">Total Pack Out Leads <b id="pack_out"><?php //echo (isset($pack_out))?$pack_out:'' ;?> </b></div>
+				</div> -->
             </div>
         </div>
         <div class="container-fluid">
@@ -176,7 +198,6 @@
                                 <option value="call_back">Call Back</option>
                                 <option value="not_interested">Not Interested</option>
                                 <option value="no_answer">No Aanswer</option>
-                                <option value="pack_out">Pack Out</option>
                             </select>
                         </div>
                     </div>
@@ -208,12 +229,13 @@
 	    <th>Last Name</th>
 	    <th>Email</th>
 	    <th>Mobile No</th>
-      <th>Confirm Number</th>
-      <th>Call Time</th>
+      <th>House Number</th>
+      <th>Household Benefits</th>
 	    <th>Status</th>
 	    <th>Action</th>
       <!-- <th>Conversation</th> -->
       <th>Notes</th>
+      <th>Addresses</th>
 	    <th>View Info</th>
 	    <th>Appeal</th>
 	    <th>Creation Date</th>
@@ -241,6 +263,49 @@
       </div>
       <div class="modal-body">
         <p id="lead_info"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addresses_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Address Info</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="address-content">
+          <div>Select Address</div>
+          <div id="address_info"></div>
+        </div>
+        <div class="info_table">
+          <table>
+            <thead>
+              <tr>
+                <th>uprn-source</th>
+                <th>floor-height</th>
+                <th>heating-cost-potential</th>
+                <th>hot-water-cost-potential</th>
+                <th>construction-age-band</th>
+                <th>potential-energy-rating</th>
+                <th>mainheat-energy-eff</th>
+                <th>windows-env-eff</th>
+                <th>lighting-energy-eff</th>
+                <th>environment-impact-potential</th>
+              </tr>
+            </thead>
+            <tbody class="address_body">
+
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

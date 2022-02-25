@@ -8,15 +8,15 @@ define("LIST_ID", 186);
 
 include_once("helpers/twilio_helper.php");
 
-$servername = "localhost";
-$username = "myecoleads_myeco-leads";
-$password = "nK%4TsPoH.Lm";
-$dbname = "myecoleads_myeco-leads";
-
 // $servername = "localhost";
-// $username = "root";
-// $password = "";
-// $dbname = "wlc";
+// $username = "myecoleads_myeco-leads";
+// $password = "nK%4TsPoH.Lm";
+// $dbname = "myecoleads_myeco-leads";
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "my_eco_leads";
 
 ############# Create connection #############
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -201,8 +201,33 @@ function update_orders($order_id,$deliver_leads){
             else{
                 $full_name = $first_name.' '.$last_name;
             }
-            
-            $sql5 = "UPDATE leads_new SET status = '1' WHERE id='".$value['id']."'";
+            $postal_code = array(
+                'postcode' => $value['postal_code']
+            );
+            $postal_query = http_build_query($postal_code);
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://epc.opendatacommunities.org/api/v1/domestic/search?'.$postal_query,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'Authorization: Basic YW5keUB3ZWJsZWFkc2NvbXBhbnkuY29tOmY4YmM5ODBjYzU2OWEzMWUwNGUxNDk2MDVlN2Y0Mzc1ZWVhYzE1NjI='
+            ),
+            ));
+
+            $epc_response = curl_exec($curl);
+            curl_close($curl);
+
+
+            $sql5 = "UPDATE leads_new SET status = '1', epc_response='".$epc_response."' WHERE id='".$value['id']."'";
             mysqli_query($conn, $sql5);
 
             unset($leads_data[$key]);

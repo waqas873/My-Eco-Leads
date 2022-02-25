@@ -35,6 +35,7 @@ class Leads extends CI_Controller
 	
 	public function index()
 	{
+
 		$data = [];
 		$where = "user_id = '".$this->user_id."'";
 		$result = $this->orders->get_where('SUM(total_leads) as ordered_leads,SUM(remaining_leads) as remaining_leads', $where, true, '' , '', '');
@@ -104,36 +105,44 @@ class Leads extends CI_Controller
         }
 
         $joins = array(
+            '0' => array('table_name' => 'leads_new leads_new',
+                'join_on' => 'leads_new.id = leads.leads_new_id',
+                'join_type' => 'left'
+            )
         );
         $from_table = "leads leads";
-        $select_from_table = 'leads.*';
+        $select_from_table = 'leads.*, leads_new.household_benefits, leads_new.house_no, leads_new.id';
         $leads_data = $this->leads->get_by_join($select_from_table, $from_table, $joins, $where, "leads.".$orderByColumn, $orderType, '', '', '', '', $limit, $offset);
-        //debug($leads_data,true);
+        // debug($leads_data,true);
         $leads_count_rows = $this->leads->get_by_join_total_rows('*', $from_table, $joins, $where, "leads.".$orderByColumn, $orderType, '', '', '', '', '', '');
         $index = $offset+1;
         if(isset($leads_data)){
         	foreach($leads_data as $item){
                 $single_field['sr'] = $index;
+                $leads_new_id = $item['id'];
+                $single_field['house_no'] = $item['house_no'];
+                $single_field['household_benefits'] = $item['household_benefits'];
                 $single_field['first_name'] = $item['first_name'];
                 $single_field['last_name'] = $item['last_name'];
                 $single_field['email'] = $item['email'];
                 $single_field['contact_mobile'] = $item['contact_mobile'];
-                $single_field['confirm_mobile_number'] = (empty($item['confirm_mobile_number']))?"---":$item['confirm_mobile_number'];
-                $single_field['best_time_to_call'] = (empty($item['best_time_to_call']))?"---":$item['best_time_to_call'];
+                // $single_field['confirm_mobile_number'] = (empty($item['confirm_mobile_number']))?"---":$item['confirm_mobile_number'];
+                // $single_field['best_time_to_call'] = (empty($item['best_time_to_call']))?"---":$item['best_time_to_call'];
                 $single_field['status'] = ($item['status']==1)?'Success':'Failed';
                 $called = ($item['lead_action']=="called")?"selected":" ";
                 $call_back = ($item['lead_action']=="call_back")?"selected":"";
                 $not_interested = ($item['lead_action']=="not_interested")?"selected":"";
                 $no_answer = ($item['lead_action']=="no_answer")?"selected":"";
-                $pack_out = ($item['lead_action']=="pack_out")?"selected":"";
+                // $pack_out = ($item['lead_action']=="pack_out")?"selected":"";
                 $id = $item['lead_id'];
-                $arr = ['called','call_back','not_interested','no_answer','pack_out'];
+                $arr = ['called','call_back','not_interested','no_answer'];
                 $color_class = '';
                 foreach($arr as $ar){
                     ($item['lead_action']==$ar)?$color_class=$ar:'';
                 }
-                $single_field['action'] = '<select class="form-control select2 action '.$color_class.'" name="'.$id.'"><option value="" class="action_select">Select</option><option value="called" '.$called.' class="called">Called</option><option value="call_back" '.$call_back.' class="call_back">Call Back</option><option value="not_interested" '.$not_interested.' class="not_interested">Not Interested</option><option value="no_answer" '.$no_answer.' class="no_answer">No Answer</option><option value="pack_out" '.$pack_out.' class="pack_out">Pack Out</option></select>';
+                $single_field['action'] = '<select class="form-control select2 action '.$color_class.'" name="'.$id.'"><option value="" class="action_select">Select</option><option value="called" '.$called.' class="called">Called</option><option value="call_back" '.$call_back.' class="call_back">Call Back</option><option value="not_interested" '.$not_interested.' class="not_interested">Not Interested</option><option value="no_answer" '.$no_answer.' class="no_answer">No Answer</option></select>';
                 //$single_field['conversation'] = '<a href="javascript::" class="send_sms" rel="'.$id.'">Send Message</a><br/><a href="'.base_url('chat/index/'.createBase64($id)).'" target="_blank">View Chat</a>';
+                $single_field['addresses'] = '<a href="javascript::" class="btn btn-info btn-sm view_addresses" rel="'.$leads_new_id.'">View Addresses</a>';
                 $single_field['notes'] = '<a href="javascript::" class="add_note btn btn-info btn-sm" rel="'.$id.'">Add Note</a><a href="javascript::" class="view_notes btn btn-info btn-sm" rel="'.$id.'">View Notes</a>';
                 $single_field['lead_info'] = (!empty($item['lead_info']))?'<a href="javascript::" class="btn btn-info btn-sm lead_info" rel="'.$id.'">Info</a>':'---';
                 $appeal = '<a href="'.base_url('leads/lead_appeal/'.createBase64($id)).'" class="btn btn-info btn-sm" onclick="delete_record_dt(this); return false;">Appeal</a>';
@@ -277,6 +286,61 @@ class Leads extends CI_Controller
             $data['lead_info'] = $lead_data;
             $data['response'] = true;
         }  
+        echo json_encode($data);
+    }
+    public function addresses_info(){
+
+        $this->layout = " ";
+        $data = array();
+        $data['response'] = false;
+        $data['address_info'] = '';
+        $data['address_table'] = '';
+
+        if(!$this->input->is_ajax_request()){
+           exit('No direct script access allowed');
+        }
+        
+        $lead_id = $this->input->post('lead_id');
+        $where = "id = '".$lead_id."'";
+        $lead_result = $this->leads_new->get_where('*', $where, true, '' , '', '');
+        if(!empty($lead_result)){
+            foreach($lead_result as $lead){
+                $epc_response = $lead['epc_response'];
+                $decoded_epc = json_decode($epc_response, true);
+                $epc_rows = $decoded_epc['rows'];
+                // debug($epc_rows, true);
+                $address_data = 'lead_address';
+                $address_data = '<select class="addresses" name="lead_address" id="lead_address">';
+                $address_data .= '<option value="">All Addresses</option>';
+
+                foreach($epc_rows as $key => $value){
+                $key = $key+1;
+                   $address_data .= '<option value="'.$key.'">'.$value['address'].'</option>';     
+                }
+                $address_data .= '</select>';
+                
+                $address_table = '';
+                foreach($epc_rows as $key => $value){
+                    $key2 = $key+1;
+                    $address_table .= '<tr class="address_row" id="info_'.$key2.'">';
+                    $address_table .= '<td>'.$value['uprn-source'].'</td>';
+                    $address_table .= '<td>'.$value['floor-height'].'</td>';
+                    $address_table .= '<td>'.$value['heating-cost-potential'].'</td>';
+                    $address_table .= '<td>'.$value['hot-water-cost-potential'].'</td>';
+                    $address_table .= '<td>'.$value['construction-age-band'].'</td>';
+                    $address_table .= '<td>'.$value['potential-energy-rating'].'</td>';
+                    $address_table .= '<td>'.$value['mainheat-energy-eff'].'</td>';
+                    $address_table .= '<td>'.$value['windows-env-eff'].'</td>';
+                    $address_table .= '<td>'.$value['lighting-energy-eff'].'</td>';
+                    $address_table .= '<td>'.$value['environment-impact-potential'].'</td>';
+                    $address_table .= '</tr>';
+                }
+                $data['address_table'] = $address_table;
+                $data['address_info'] = $address_data;
+                $data['response'] = true;
+            }
+        }
+        // debug($data);
         echo json_encode($data);
     }
 
