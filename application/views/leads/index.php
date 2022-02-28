@@ -49,6 +49,8 @@ table, td, th {
 .answer{
   color: #A964AC;
 }
+
+
 .add_note{
   margin-bottom: 5px;
 }
@@ -286,24 +288,8 @@ table, td, th {
           <div id="address_info"></div>
         </div>
         <div class="info_table">
-          <table>
-            <thead>
-              <tr>
-                <th>uprn-source</th>
-                <th>floor-height</th>
-                <th>heating-cost-potential</th>
-                <th>hot-water-cost-potential</th>
-                <th>construction-age-band</th>
-                <th>potential-energy-rating</th>
-                <th>mainheat-energy-eff</th>
-                <th>windows-env-eff</th>
-                <th>lighting-energy-eff</th>
-                <th>environment-impact-potential</th>
-              </tr>
-            </thead>
-            <tbody class="address_body">
+          <table class="lead-table">
 
-            </tbody>
           </table>
         </div>
       </div>

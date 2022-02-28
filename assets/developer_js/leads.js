@@ -61,7 +61,7 @@ $(document).ready(function () {
     $(document).on('click', '.view_addresses', function (e) {
         var lead_id = $(this).attr('rel');
         $('#address_info').empty();
-        $('.address_body').empty();
+        $('.lead-table').empty();
         if (lead_id != '') {
             var url = base_url + "leads/addresses_info";
             $.ajax({
@@ -72,7 +72,7 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.response) {
                         $('#address_info').append(data.address_info);
-                        $('.address_body').append(data.address_table);
+                        $('.lead-table').append(data.address_table);
                         $('#addresses_modal').modal('show');
                     }
                 }
@@ -83,9 +83,11 @@ $(document).ready(function () {
 
 
     $(document).on('change', '#lead_address', function () {
-        var selValue = $(this).val();
-        alert(selValue);
+        var row_value = $(this).val();
+        $('.row-data').css("display", "none");
+        $("#" + row_value).css("display", "block");
     })
+
 
 
 
