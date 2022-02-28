@@ -77,6 +77,12 @@ $(document).ready(function () {
                     }
                 }
             });
+        } else {
+            swal({
+                type: 'warning',
+                title: 'Warning',
+                text: "Addresses are not available!."
+            })
         }
         return false;
     });
