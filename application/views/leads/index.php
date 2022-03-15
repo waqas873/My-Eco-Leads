@@ -8,9 +8,7 @@
 #address_info {
   text-align: center;
 }
-table, td, th {
-  border: 1px solid #333;
-}
+
 .addresses {
   padding: 10px;
 }
@@ -31,7 +29,7 @@ table, td, th {
     height: 34px !important;
 }
 #lead_info{
-	font-size: 17px;
+  font-size: 17px;
     color: #EF9D0C;
 }
 .note_des{
@@ -66,6 +64,57 @@ table, td, th {
 .table-scrollable{
     overflow-x: auto !important;
 }
+.info_table{
+    background:white;
+}
+.lead-table table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  background: #34495e; 
+  color: #f3f3f3;
+}
+
+.lead-table td, th { 
+  padding: 8px; 
+  text-align: left; 
+}
+
+/* Zebra striping */
+.lead-table tr:nth-of-type(odd) { 
+  background: #16a085; 
+}
+
+.lead-table  th { 
+  background: #7fc100; 
+  color:white;
+  font-weight: bold; 
+}
+
+h1 a {
+  text-decoration: none;
+  color: #fff;
+}
+</style>
+<style type="text/css">
+
+table.lead-table2{
+    border-collapse: collapse;
+  width: 100%;
+  background:white;
+  text-transform: uppercase;
+}
+
+.lead-table2 td {
+  text-align: left;
+  padding: 8px;
+}
+.lead-table2 th {
+  text-align: left;
+  background-color: #dfdfdf;
+  padding: 8px;
+  font-weight:bold;
+}
+.lead-table2 tr:nth-child(odd) {background-color: #f8f8f8;}
 </style>
 
 <?php if($this->session->flashdata('success_message')) { ?>
@@ -110,56 +159,56 @@ table, td, th {
         <div class="container-fluid leades-section">
             <div class="">
                 <div class="row">
-				<div class="col-md-2 col-sm-4 col-xs-4"> 
-					<div class="leades total">
-						<div class="no"><?php echo (isset($ordered_leads))?$ordered_leads:'' ;?></div>Total Ordered Leads</div>
-				</div>
-				
-				<div class="col-md-2 col-sm-4 col-xs-4"> 
-					<div class="leades total">
-						<div class="no"><?php echo (isset($delivered_leads))?$delivered_leads:'' ;?></div>Total Delivered Leads</div>
-				</div>
-				
-				<div class="col-md-2 col-sm-4 col-xs-4"> 
-					<div class="leades total">
-						<div class="no"><?php echo (isset($remaining_leads))?$remaining_leads:'' ;?></div>Total Remaining Leads</div>
-				</div>
-				
-				<div class="col-md-2 col-sm-4 col-xs-4"> 
-					<div class="leades total">
-						<div class="no"><?php echo (isset($today_delivered_leads))?$today_delivered_leads:'' ;?></div>Today Recieved Leads</div>
-				</div>
-				<!-- <div class="col-md-2 col-sm-4 col-xs-4"> 
-					<div class="leades">
-						<div class="no">4</div><span class="not-set">Not Set</span> Leads</div>
-				</div> -->
+        <div class="col-md-2 col-sm-4 col-xs-4"> 
+          <div class="leades total">
+            <div class="no"><?php echo (isset($ordered_leads))?$ordered_leads:'' ;?></div>Total Ordered Leads</div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 col-xs-4"> 
+          <div class="leades total">
+            <div class="no"><?php echo (isset($delivered_leads))?$delivered_leads:'' ;?></div>Total Delivered Leads</div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 col-xs-4"> 
+          <div class="leades total">
+            <div class="no"><?php echo (isset($remaining_leads))?$remaining_leads:'' ;?></div>Total Remaining Leads</div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 col-xs-4"> 
+          <div class="leades total">
+            <div class="no"><?php echo (isset($today_delivered_leads))?$today_delivered_leads:'' ;?></div>Today Recieved Leads</div>
+        </div>
+        <!-- <div class="col-md-2 col-sm-4 col-xs-4"> 
+          <div class="leades">
+            <div class="no">4</div><span class="not-set">Not Set</span> Leads</div>
+        </div> -->
           </div>
           </div>
       </div>
 
         <div class="container-fluid">
             <div class="row">
-				<div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box called">Total Called Leads <b id="called"><?php echo (isset($called))?$called:'' ;?></b> </div>
-				</div>
-				<div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box call_back">Total Call Back Leads <b id="call_back"><?php echo (isset($call_back))?$call_back:'' ;?> </b></div>
-				</div>
-				<div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box not_interested">Total Not Interested Leads <b id="not_interested"><?php echo (isset($not_interested))?$not_interested:'' ;?></b> </div>
-				</div>
+        <div class="col-md-4 col-sm-4 col-xs-12"> 
+          <div class="value-box called">Total Called Leads <b id="called"><?php echo (isset($called))?$called:'' ;?></b> </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12"> 
+          <div class="value-box call_back">Total Call Back Leads <b id="call_back"><?php echo (isset($call_back))?$call_back:'' ;?> </b></div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12"> 
+          <div class="value-box not_interested">Total Not Interested Leads <b id="not_interested"><?php echo (isset($not_interested))?$not_interested:'' ;?></b> </div>
+        </div>
             </div>
             <div class="row" style="margin-top: 15px;">
-				<div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box no_answer">Total No Answer Leads <b id="no_answer"><?php echo (isset($no_answer))?$no_answer:'' ;?></b> </div>
-				</div>
-				<!-- <div class="col-md-4 col-sm-4 col-xs-12"> 
-					<div class="value-box pack_out">Total Pack Out Leads <b id="pack_out"><?php //echo (isset($pack_out))?$pack_out:'' ;?> </b></div>
-				</div> -->
+        <div class="col-md-4 col-sm-4 col-xs-12"> 
+          <div class="value-box no_answer">Total No Answer Leads <b id="no_answer"><?php echo (isset($no_answer))?$no_answer:'' ;?></b> </div>
+        </div>
+        <!-- <div class="col-md-4 col-sm-4 col-xs-12"> 
+          <div class="value-box pack_out">Total Pack Out Leads <b id="pack_out"><?php //echo (isset($pack_out))?$pack_out:'' ;?> </b></div>
+        </div> -->
             </div>
         </div>
         <div class="container-fluid">
-        	<div class="row" style="margin-top: 15px;">
+          <div class="row" style="margin-top: 15px;">
                 <div class="col-md-4">
                    <div class="form-group filters">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Status: </label>
@@ -211,15 +260,15 @@ table, td, th {
         <div class="container-fluid table-section">
            
          <div class="">
-               								
+                              
                 <div class="row">
                 
                 <div class="col-md-12"> 
-					<div class="fliter-box">
-					<button class="btn fliter"> Fliter <span class="n-leads"><span id="n_leads">0</span> Leads</span></button>
-					</div>
-				</div>
-					
+          <div class="fliter-box">
+          <button class="btn fliter"> Fliter <span class="n-leads"><span id="n_leads">0</span> Leads</span></button>
+          </div>
+        </div>
+          
                 <div class="col-md-12"> 
                 <div class="table-list">
                 
@@ -228,31 +277,31 @@ table, td, th {
     <tr>
       <th>Sr#</th>
         <th>First Name</th>
-	    <th>Last Name</th>
-	    <th>Email</th>
-	    <th>Mobile No</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Mobile No</th>
       <th>House Number</th>
       <th>Household Benefits</th>
-	    <th>Status</th>
-	    <th>Action</th>
+      <th>Status</th>
+      <th>Action</th>
       <!-- <th>Conversation</th> -->
       <th>Notes</th>
-      <th>Addresses</th>
-	    <th>View Info</th>
-	    <th>Appeal</th>
-	    <th>Creation Date</th>
+      <th>EPC</th>
+      <th>View Info</th>
+      <th>Appeal</th>
+      <th>Creation Date</th>
     </tr>
   </thead>
 </table>
-	 		
-		 		</div>
-			 
-				 </div>
+      
+        </div>
+       
+         </div>
 
-				</div>
+        </div>
                 
-			  </div>   
-			</div>
+        </div>   
+      </div>
 
 <div class="modal" id="info_modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -273,6 +322,19 @@ table, td, th {
   </div>
 </div>
 
+<style type="text/css">
+.lead-table2 tr {
+  display: flex;
+  justify-content: space-between;
+}
+.lead-table2 td {
+  width: 50%;
+}
+.lead-table2 th {
+  width: 100%;
+}
+</style>
+
 <div class="modal" id="addresses_modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -287,12 +349,93 @@ table, td, th {
           <div>Select Address</div>
           <div id="address_info"></div>
         </div>
-        <div class="info_table">
-          <table class="lead-table">
-
-          </table>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <table class="lead-table2">
+                  <!-- <tbody>
+                    <tr>
+                        <th colspan="2">Certificate Details</th>
+                      </tr>
+                    <tr>
+                          <td>low energy fixed light count</td><td>(no value available)</td>
+                    </tr>
+                      <tr>
+                          <td>uprn source</td><td>Address Matched</td>
+                    </tr>
+                      <tr>
+                          <td>floor height</td><td>(no value available)</td>
+                    </tr>
+                      <tr>
+                          <td>heating cost potential</td><td>398</td>
+                    </tr>
+                      <tr>
+                          <td>unheated corridor length</td><td>(no value available)</td>
+                    </tr>
+                      <tr>
+                          <td>hot water cost potential</td><td>71</td>
+                    </tr>
+                      <tr>
+                          <td>construction age band</td><td>INVALID!</td>
+                    </tr>
+                    <tr>
+                          <td>potential energy rating</td><td>B</td>
+                    </tr>
+                      <tr>
+                          <td>mainheat energy eff</td><td>Good</td>
+                    </tr>
+                      <tr>
+                          <td>windows env eff</td><td>Average</td>
+                    </tr>
+                      <tr>
+                        <th colspan="2">Location</th>
+                      </tr>
+                       <tr>
+                          <td>extension count</td><td>2.0</td>
+                    </tr>
+                      <tr>
+                          <td>mainheatc env eff</td><td>Average</td>
+                    </tr>
+                      <tr>
+                          <td>address3</td><td>(no value available)</td>
+                    </tr>
+                      <tr>
+                          <td>wind turbine count</td><td>0</td>
+                    </tr>
+                      <tr>
+                          <td>tenure</td><td>Owner-occupied</td>
+                    </tr>
+                      <tr>
+                          <td>floor level</td><td>(no value available)</td>
+                    </tr>
+                      <tr>
+                          <td>potential energy efficiency</td><td>84</td>
+                    </tr>
+                      <tr>
+                          <td>hot water energy eff</td><td>Good</td>
+                    </tr>
+                      <tr>
+                          <td>low energy lighting</td><td>100</td>
+                    </tr>
+                      <tr>
+                          <td>hotwater description</td><td>From main system</td>
+                    </tr>
+                    </tbody> -->
+                </table>
+            </div>
         </div>
+        <!-- <div class="info_table">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <table class="lead-table lead-table2">
+
+              </table>
+            </div>
+          </div>
+        </div> -->
       </div>
+      
+     
+      
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
@@ -371,5 +514,5 @@ table, td, th {
   </div>
 </div>
 
-			
+      
 <script src="assets/developer_js/leads.js" type="text/javascript"></script>

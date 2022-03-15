@@ -2,43 +2,43 @@
 
 class Leads extends CI_Controller 
 {
-	/**
-	* @var stirng
-	* @access Public
-	*/
-	public $selected_tab = '';
-	
-	/** 
-	* Controller constructor
-	* 
-	* @access public 
-	*/
-	public $user_id = '';
+    /**
+    * @var stirng
+    * @access Public
+    */
+    public $selected_tab = '';
+    
+    /** 
+    * Controller constructor
+    * 
+    * @access public 
+    */
+    public $user_id = '';
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->selected_tab = 'leads';
-		$this->layout = 'user_dashboard';
-		$this->load->model('users_model', 'users');
-		$this->load->model('leads_model', 'leads');
-		$this->load->model('leads_new_model', 'leads_new');
+    public function __construct()
+    {
+        parent::__construct();
+        $this->selected_tab = 'leads';
+        $this->layout = 'user_dashboard';
+        $this->load->model('users_model', 'users');
+        $this->load->model('leads_model', 'leads');
+        $this->load->model('leads_new_model', 'leads_new');
         $this->load->model('orders_model', 'orders');
         $this->load->model('lead_order_model', 'lead_order');
         $this->load->model('notes_model', 'notes');
-		if(!$this->session->userdata('user')){
-		    $this->session->set_flashdata('error_message', 'Sorry! Please login first.');
-		    redirect('sign-in');
-	    }
-	    $this->user_id = $this->session->userdata('user_id');
-	}
-	
-	public function index()
-	{
+        if(!$this->session->userdata('user')){
+            $this->session->set_flashdata('error_message', 'Sorry! Please login first.');
+            redirect('sign-in');
+        }
+        $this->user_id = $this->session->userdata('user_id');
+    }
+    
+    public function index()
+    {
 
-		$data = [];
-		$where = "user_id = '".$this->user_id."'";
-		$result = $this->orders->get_where('SUM(total_leads) as ordered_leads,SUM(remaining_leads) as remaining_leads', $where, true, '' , '', '');
+        $data = [];
+        $where = "user_id = '".$this->user_id."'";
+        $result = $this->orders->get_where('SUM(total_leads) as ordered_leads,SUM(remaining_leads) as remaining_leads', $where, true, '' , '', '');
         $result = $result[0];
         $data['ordered_leads'] = $result['ordered_leads'];
         $data['remaining_leads'] = $result['remaining_leads'];
@@ -53,10 +53,10 @@ class Leads extends CI_Controller
             $where = "user_id = '".$this->user_id."' AND lead_action = '".$ar."'";
             $data[$ar] = $this->leads->count_rows($where);
         }
-		$this->load->view('leads/index', $data);
-	}
+        $this->load->view('leads/index', $data);
+    }
 
-	public function get_leads()
+    public function get_leads()
     {
         $this->layout = '';
         $like = array();
@@ -117,7 +117,7 @@ class Leads extends CI_Controller
         $leads_count_rows = $this->leads->get_by_join_total_rows('*', $from_table, $joins, $where, "leads.".$orderByColumn, $orderType, '', '', '', '', '', '');
         $index = $offset+1;
         if(isset($leads_data)){
-        	foreach($leads_data as $item){
+            foreach($leads_data as $item){
                 $single_field['sr'] = $index;
                 $leads_new_id = $item['id'];
                 $single_field['house_no'] = $item['house_no'];
@@ -142,7 +142,7 @@ class Leads extends CI_Controller
                 }
                 $single_field['action'] = '<select class="form-control select2 action '.$color_class.'" name="'.$id.'"><option value="" class="action_select">Select</option><option value="called" '.$called.' class="called">Called</option><option value="call_back" '.$call_back.' class="call_back">Call Back</option><option value="not_interested" '.$not_interested.' class="not_interested">Not Interested</option><option value="no_answer" '.$no_answer.' class="no_answer">No Answer</option></select>';
                 //$single_field['conversation'] = '<a href="javascript::" class="send_sms" rel="'.$id.'">Send Message</a><br/><a href="'.base_url('chat/index/'.createBase64($id)).'" target="_blank">View Chat</a>';
-                $single_field['addresses'] = '<a href="javascript::" class="btn btn-info btn-sm view_addresses" rel="'.$leads_new_id.'">View Addresses</a>';
+                $single_field['epc'] = '<a href="javascript::" class="btn btn-info btn-sm view_addresses" rel="'.$leads_new_id.'">EPC Checker</a>';
                 $single_field['notes'] = '<a href="javascript::" class="add_note btn btn-info btn-sm" rel="'.$id.'">Add Note</a><a href="javascript::" class="view_notes btn btn-info btn-sm" rel="'.$id.'">View Notes</a>';
                 $single_field['lead_info'] = (!empty($item['lead_info']))?'<a href="javascript::" class="btn btn-info btn-sm lead_info" rel="'.$id.'">Info</a>':'---';
                 $appeal = '<a href="'.base_url('leads/lead_appeal/'.createBase64($id)).'" class="btn btn-info btn-sm" onclick="delete_record_dt(this); return false;">Appeal</a>';
@@ -228,6 +228,7 @@ class Leads extends CI_Controller
         $where = "lead_id = '".$lead_id."'";
         $result = $this->leads->get_where('*', $where, true, '' , '', '');
         $leads_new_id = $result[0]['leads_new_id'];
+        // debug($leads_new_id, true);
         if(!empty($leads_new_id)){
             $lead_data = '';
             $where1 ="leads_new.id = '".$leads_new_id."'";
@@ -306,264 +307,121 @@ class Leads extends CI_Controller
         if(!empty($lead_result)){
             foreach($lead_result as $lead){
                 $epc_response = $lead['epc_response'];
-                $decoded_epc = json_decode($epc_response, true);
-                $epc_rows = $decoded_epc['rows'];
-                // debug($epc_rows, true);
-                $address_data = 'lead_address';
-                $address_data = '<select class="addresses" name="lead_address" id="lead_address">';
-                $address_data .= '<option value="">All Addresses</option>';
-
-                foreach($epc_rows as $key => $value){
-                $key = $key+1;
-                   $address_data .= '<option value="row_'.$key.'">'.$value['address'].'</option>';     
-                }
-                $address_data .= '</select>';
                 
-                $address_table = '';
-                foreach($epc_rows as $key => $value){
-                    $key2 = $key+1;
-                    $address_table .= '<tbody style="display:none;" class="row-data" id="row_'.$key2.'">';
-
-                    $address_table .= '<tr>';
-                    $address_table .= '<th>LOW ENERGY FIXED LIGHT COUNT</th>';
-                    $address_table .= '<th>UPRN SOURCE</th>';
-                    $address_table .= '<th>FLOOR HEIGHT</th>';
-                    $address_table .= '<th>HEATING COST POTENTIAL</th>';
-                    $address_table .= '<th>UNHEATED CORRIDOR LENGTH</th>';
-                    $address_table .= '<th>HOT WATER COST POTENTIAL</th>';
-                    $address_table .= '<th>CONSTRUCTION AGE BAND</th>';
-                    $address_table .= '<th>POTENTIAL ENERGY RATING</th>';
-                    $address_table .= '<th>MAINHEAT ENERGY EFF</th>';
-                    $address_table .= '<th>WINDOWS ENV EFF</th>';
-                    $address_table .= '</tr>';
+                if(!empty($epc_response)){
+                    $decoded_epc = json_decode($epc_response, true);
+                    $epc_rows = $decoded_epc['rows'];
+                    // debug($epc_rows, true);
+                    $address_data = 'lead_address';
+                    $address_data = '<select class="addresses" name="lead_address" id="lead_address">';
+                    $address_data .= '<option value="">All Addresses</option>';
+    
+                    foreach($epc_rows as $key => $value){
+                    $key = $key+1;
+                       $address_data .= '<option value="row_'.$key.'">'.$value['address'].'</option>';     
+                    }
+                    $address_data .= '</select>';
                     
-                    $address_table .= '<tr>';
-                    $address_table .= ($value['low-energy-fixed-light-count']!="")?'<td>'.$value['low-energy-fixed-light-count'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['uprn-source']!="")?'<td>'.$value['uprn-source'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['floor-height']!="")?'<td>'.$value['floor-height'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['heating-cost-potential']!="")?'<td>'.$value['heating-cost-potential'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['unheated-corridor-length']!="")?'<td>'.$value['unheated-corridor-length'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['hot-water-cost-potential']!="")?'<td>'.$value['hot-water-cost-potential'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['construction-age-band']!="")?'<td>'.$value['construction-age-band'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['potential-energy-rating']!="")?'<td>'.$value['potential-energy-rating'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['mainheat-energy-eff']!="")?'<td>'.$value['mainheat-energy-eff'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['windows-env-eff']!="")?'<td>'.$value['windows-env-eff'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= '</tr>';
+                    $address_table = '';
+                    foreach($epc_rows as $key => $value){
+                        $key2 = $key+1;
+                        $address_table .= '<tbody style="display:none;" class="row-data" id="row_'.$key2.'">';
 
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>lighting energy eff</th>';
-                    // $address_table .= '<th>environment impact potential</th>';
-                    // $address_table .= '<th>glazed type</th>';
-                    // $address_table .= '<th>heating cost current</th>';
-                    // $address_table .= '<th>walls description</th>';
-                    // $address_table .= '<th>mainheatcont description</th>';
-                    // $address_table .= '<th>sheating energy eff</th>';
-                    // $address_table .= '<th>property type</th>';
-                    // $address_table .= '<th>local authority label</th>';
-                    // $address_table .= '<th>fixed lighting outlets count</th>';
-                    // $address_table .= '</tr>';
+                        $val1 = (!empty($value['low-energy-fixed-light-count']))?$value['low-energy-fixed-light-count']:'N/A';
+                        $val2 = (!empty($value['uprn-source']))?$value['uprn-source']:'N/A';
+                        $val3 = (!empty($value['floor-height']))?$value['floor-height']:'N/A';
+                        $val4 = (!empty($value['heating-cost-potential']))?$value['heating-cost-potential']:'N/A';
+                        $val5 = (!empty($value['unheated-corridor-length']))?$value['unheated-corridor-length']:'N/A';
+                        $val6 = (!empty($value['hot-water-cost-potential']))?$value['hot-water-cost-potential']:'N/A';
+                        $val7 = (!empty($value['construction-age-band']))?$value['construction-age-band']:'N/A';
+                        $val8 = (!empty($value['potential-energy-rating']))?$value['potential-energy-rating']:'N/A';
+                        $val9 = (!empty($value['mainheat-energy-eff']))?$value['mainheat-energy-eff']:'N/A';
+                        $val10 = (!empty($value['windows-env-eff']))?$value['windows-env-eff']:'N/A';
 
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['lighting-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['environment-impact-potential'].'</td>';
-                    // $address_table .= '<td>'.$value['glazed-type'].'</td>';
-                    // $address_table .= '<td>'.$value['heating-cost-current'].'</td>';
-                    // $address_table .= '<td>'.$value['walls-description'].'</td>';
-                    // $address_table .= '<td>'.$value['mainheatcont-description'].'</td>';
-                    // $address_table .= '<td>'.$value['sheating-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['property-type'].'</td>';
-                    // $address_table .= '<td>'.$value['local-authority-label'].'</td>';
-                    // $address_table .= '<td>'.$value['fixed-lighting-outlets-count'].'</td>';
-                    // $address_table .= '</tr>';
+                        $val11 = (!empty($value['extension-count']))?$value['extension-count']:'N/A';
+                        $val12 = (!empty($value['mainheatc-env-eff']))?$value['mainheatc-env-eff']:'N/A';
+                        $val13 = (!empty($value['address3']))?$value['address3']:'N/A';
+                        $val14 = (!empty($value['wind-turbine-count']))?$value['wind-turbine-count']:'N/A';
+                        $val15 = (!empty($value['tenure']))?$value['tenure']:'N/A';
+                        $val16 = (!empty($value['floor-level']))?$value['floor-level']:'N/A';
+                        $val17 = (!empty($value['potential-energy-efficiency']))?$value['potential-energy-efficiency']:'N/A';
+                        $val18 = (!empty($value['hot-water-energy-eff']))?$value['hot-water-energy-eff']:'N/A';
+                        $val19 = (!empty($value['low-energy-lighting']))?$value['low-energy-lighting']:'N/A';
+                        $val20 = (!empty($value['hotwater-description']))?$value['hotwater-description']:'N/A';
 
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>energy tariff</th>';
-                    // $address_table .= '<th>mechanical ventilation</th>';
-                    // $address_table .= '<th>hot water cost current</th>';
-                    // $address_table .= '<th>county</th>';
-                    // $address_table .= '<th>postcode</th>';
-                    // $address_table .= '<th>solar water heating flag</th>';
-                    // $address_table .= '<th>constituency</th>';
-                    // $address_table .= '<th>co2 emissions potential</th>';
-                    // $address_table .= '<th>number heated rooms</th>';
-                    // $address_table .= '<th>floor description</th>';
-                    // $address_table .= '</tr>';
-
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['energy-tariff'].'</td>';
-                    // $address_table .= '<td>'.$value['mechanical-ventilation'].'</td>';
-                    // $address_table .= '<td>'.$value['hot-water-cost-current'].'</td>';
-                    // $address_table .= '<td>'.$value['county'].'</td>';
-                    // $address_table .= '<td>'.$value['postcode'].'</td>';
-                    // $address_table .= '<td>'.$value['solar-water-heating-flag'].'</td>';
-                    // $address_table .= '<td>'.$value['constituency'].'</td>';
-                    // $address_table .= '<td>'.$value['co2-emissions-potential'].'</td>';
-                    // $address_table .= '<td>'.$value['number-heated-rooms'].'</td>';
-                    // $address_table .= '<td>'.$value['floor-description'].'</td>';
-                    // $address_table .= '</tr>';
-
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>energy consumption potential</th>';
-                    // $address_table .= '<th>local authority</th>';
-                    // $address_table .= '<th>built form</th>';
-                    // $address_table .= '<th>number open fireplaces</th>';
-                    // $address_table .= '<th>windows description</th>';
-                    // $address_table .= '<th>glazed area</th>';
-                    // $address_table .= '<th>inspection date</th>';
-                    // $address_table .= '<th>mains gas flag</th>';
-                    // $address_table .= '<th>co2 emiss curr per floor area</th>';
-                    // $address_table .= '<th>address1</th>';
-                    // $address_table .= '</tr>';
-
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['energy-consumption-potential'].'</td>';
-                    // $address_table .= '<td>'.$value['local-authority'].'</td>';
-                    // $address_table .= '<td>'.$value['built-form'].'</td>';
-                    // $address_table .= '<td>'.$value['number-open-fireplaces'].'</td>';
-                    // $address_table .= '<td>'.$value['windows-description'].'</td>';
-                    // $address_table .= '<td>'.$value['glazed-area'].'</td>';
-                    // $address_table .= '<td>'.$value['inspection-date'].'</td>';
-                    // $address_table .= '<td>'.$value['mains-gas-flag'].'</td>';
-                    // $address_table .= '<td>'.$value['co2-emiss-curr-per-floor-area'].'</td>';
-                    // $address_table .= '<td>'.$value['address1'].'</td>';
-                    // $address_table .= '</tr>';
-
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>heat loss corridor</th>';
-                    // $address_table .= '<th>flat storey count</th>';
-                    // $address_table .= '<th>constituency label</th>';
-                    // $address_table .= '<th>roof energy eff</th>';
-                    // $address_table .= '<th>total floor area</th>';
-                    // $address_table .= '<th>building reference number</th>';
-                    // $address_table .= '<th>environment impact current</th>';
-                    // $address_table .= '<th>co2 emissions current</th>';
-                    // $address_table .= '<th>roof description</th>';
-                    // $address_table .= '<th>floor energy eff</th>';
-                    // $address_table .= '</tr>';
-
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['heat-loss-corridor'].'</td>';
-                    // $address_table .= '<td>'.$value['flat-storey-count'].'</td>';
-                    // $address_table .= '<td>'.$value['constituency-label'].'</td>';
-                    // $address_table .= '<td>'.$value['roof-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['total-floor-area'].'</td>';
-                    // $address_table .= '<td>'.$value['building-reference-number'].'</td>';
-                    // $address_table .= '<td>'.$value['environment-impact-current'].'</td>';
-                    // $address_table .= '<td>'.$value['co2-emissions-current'].'</td>';
-                    // $address_table .= '<td>'.$value['roof-description'].'</td>';
-                    // $address_table .= '<td>'.$value['floor-energy-eff'].'</td>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>number habitable rooms</th>';
-                    // $address_table .= '<th>address2</th>';
-                    // $address_table .= '<th>hot water env eff</th>';
-                    // $address_table .= '<th>posttown</th>';
-                    // $address_table .= '<th>mainheatc energy eff</th>';
-                    // $address_table .= '<th>main fuel</th>';
-                    // $address_table .= '<th>lighting env eff</th>';
-                    // $address_table .= '<th>windows energy eff</th>';
-                    // $address_table .= '<th>floor env eff</th>';
-                    // $address_table .= '<th>sheating env eff</th>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['number-habitable-rooms'].'</td>';
-                    // $address_table .= '<td>'.$value['address2'].'</td>';
-                    // $address_table .= '<td>'.$value['hot-water-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['posttown'].'</td>';
-                    // $address_table .= '<td>'.$value['mainheatc-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['main-fuel'].'</td>';
-                    // $address_table .= '<td>'.$value['lighting-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['windows-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['floor-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['sheating-env-eff'].'</td>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>lighting description</th>';
-                    // $address_table .= '<th>roof env eff</th>';
-                    // $address_table .= '<th>walls energy eff</th>';
-                    // $address_table .= '<th>photo supply</th>';
-                    // $address_table .= '<th>lighting cost potential</th>';
-                    // $address_table .= '<th>mainheat env eff</th>';
-                    // $address_table .= '<th>multi glaze proportion</th>';
-                    // $address_table .= '<th>main heating controls</th>';
-                    // $address_table .= '<th>lodgement datetime</th>';
-                    // $address_table .= '<th>flat top storey</th>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['lighting-description'].'</td>';
-                    // $address_table .= '<td>'.$value['roof-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['walls-energy-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['photo-supply'].'</td>';
-                    // $address_table .= '<td>'.$value['lighting-cost-potential'].'</td>';
-                    // $address_table .= '<td>'.$value['mainheat-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['multi-glaze-proportion'].'</td>';
-                    // $address_table .= '<td>'.$value['main-heating-controls'].'</td>';
-                    // $address_table .= '<td>'.$value['lodgement-datetime'].'</td>';
-                    // $address_table .= '<td>'.$value['flat-top-storey'].'</td>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<th>current energy rating</th>';
-                    // $address_table .= '<th>secondheat description</th>';
-                    // $address_table .= '<th>walls env eff</th>';
-                    // $address_table .= '<th>transaction type</th>';
-                    // $address_table .= '<th>uprn</th>';
-                    // $address_table .= '<th>current energy efficiency</th>';
-                    // $address_table .= '<th>energy consumption current</th>';
-                    // $address_table .= '<th>mainheat description</th>';
-                    // $address_table .= '<th>lighting cost current</th>';
-                    // $address_table .= '<th>lodgement date</th>';
-                    // $address_table .= '</tr>';
-                    
-                    // $address_table .= '<tr>';
-                    // $address_table .= '<td>'.$value['current-energy-rating'].'</td>';
-                    // $address_table .= '<td>'.$value['secondheat-description'].'</td>';
-                    // $address_table .= '<td>'.$value['walls-env-eff'].'</td>';
-                    // $address_table .= '<td>'.$value['transaction-type'].'</td>';
-                    // $address_table .= '<td>'.$value['uprn'].'</td>';
-                    // $address_table .= '<td>'.$value['current-energy-efficiency'].'</td>';
-                    // $address_table .= '<td>'.$value['energy-consumption-current'].'</td>';
-                    // $address_table .= '<td>'.$value['mainheat-description'].'</td>';
-                    // $address_table .= '<td>'.$value['lighting-cost-current'].'</td>';
-                    // $address_table .= '<td>'.$value['lodgement-date'].'</td>';
-                    // $address_table .= '</tr>';
-                    
-                    $address_table .= '<tr>';
-                    $address_table .= '<th>EXTENSION COUNT</th>';
-                    $address_table .= '<th>MAINHEATC ENV EFF</th>';
-                    $address_table .= '<th>ADDRESS3</th>';
-                    $address_table .= '<th>WIND TURBINE COUNT</th>';
-                    $address_table .= '<th>TENURE</th>';
-                    $address_table .= '<th>FLOOR LEVEL</th>';
-                    $address_table .= '<th>POTENTIAL ENERGY EFFICIENCY</th>';
-                    $address_table .= '<th>HOT WATER ENERGY EFF</th>';
-                    $address_table .= '<th>LOW ENERGY LIGHTING</th>';
-                    $address_table .= '<th>HOTWATER DESCRIPTION</th>';
-                    $address_table .= '</tr>';
-                    
-                    $address_table .= '<tr>';
-                    $address_table .= ($value['extension-count']!="")?'<td>'.$value['extension-count'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['mainheatc-env-eff']!="")?'<td>'.$value['mainheatc-env-eff'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['address3']!="")?'<td>'.$value['address3'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['wind-turbine-count']!="")?'<td>'.$value['wind-turbine-count'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['tenure']!="")?'<td>'.$value['tenure'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['floor-level']!="")?'<td>'.$value['floor-level'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['potential-energy-efficiency']!="")?'<td>'.$value['potential-energy-efficiency'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['hot-water-energy-eff']!="")?'<td>'.$value['hot-water-energy-eff'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['low-energy-lighting']!="")?'<td>'.$value['low-energy-lighting'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= ($value['hotwater-description']!="")?'<td>'.$value['hotwater-description'].'</td>':'<td>(NO VALUE AVAILABLE)</td>';
-                    $address_table .= '</tr>';
-
-                    $address_table .= '</tbody>';
-
+                        $address_table .= '<tr>
+                            <th colspan="2">Certificate Details</th>
+                            </tr>
+                            <tr>
+                                <td>low energy fixed light count</td><td>'.$val1.'</td>
+                            </tr>
+                            <tr>
+                                <td>uprn source</td><td>'.$val2.'</td>
+                            </tr>
+                            <tr>
+                                <td>floor height</td><td>'.$val3.'</td>
+                            </tr>
+                            <tr>
+                                <td>heating cost potential</td><td>'.$val4.'</td>
+                            </tr>
+                            <tr>
+                                <td>unheated corridor length</td><td>'.$val5.'</td>
+                            </tr>
+                            <tr>
+                                <td>hot water cost potential</td><td>'.$val6.'</td>
+                            </tr>
+                            <tr>
+                                <td>construction age band</td><td>'.$val7.'</td>
+                            </tr>
+                            <tr>
+                                <td>potential energy rating</td><td>'.$val8.'</td>
+                            </tr>
+                            <tr>
+                                <td>mainheat energy eff</td><td>'.$val9.'</td>
+                            </tr>
+                            <tr>
+                                <td>windows env eff</td><td>'.$val10.'</td>
+                            </tr>
+                            <tr>
+                              <th colspan="2">Location</th>
+                            </tr>
+                            <tr>
+                                <td>extension count</td><td>'.$val11.'</td>
+                            </tr>
+                            <tr>
+                                <td>mainheatc env eff</td><td>'.$val12.'</td>
+                            </tr>
+                            <tr>
+                                <td>address3</td><td>'.$val13.'</td>
+                            </tr>
+                            <tr>
+                                <td>wind turbine count</td><td>'.$val14.'</td>
+                            </tr>
+                            <tr>
+                                <td>tenure</td><td>'.$val15.'</td>
+                            </tr>
+                            <tr>
+                                <td>floor level</td><td>'.$val16.'</td>
+                            </tr>
+                            <tr>
+                                <td>potential energy efficiency</td><td>'.$val17.'</td>
+                            </tr>
+                            <tr>
+                                <td>hot water energy eff</td><td>'.$val18.'</td>
+                            </tr>
+                            <tr>
+                                <td>low energy lighting</td><td>'.$val19.'</td>
+                            </tr>
+                            <tr>
+                                <td>hotwater description</td><td>'.$val20.'</td>
+                            </tr>';
+                        $address_table .= '</tbody>';
+    
+                    }
+                    $data['address_table'] = $address_table;
+                    $data['address_info'] = $address_data;
+                    $data['response'] = true;
                 }
-                $data['address_table'] = $address_table;
-                $data['address_info'] = $address_data;
-                $data['response'] = true;
             }
         }
         // debug($data);
@@ -616,7 +474,7 @@ class Leads extends CI_Controller
         $data['regenerate_token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
-	
+    
     public function delete_note()
     {
         $data = array();
