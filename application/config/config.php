@@ -506,7 +506,11 @@ $config['csrf_exclude_uris'] = array(
         'keywords/get_keywords',
         'admin/orders/get_orders',
         'admin/orders/get_manual_orders',
-        'typeform_leads/storeLead'
+        'typeform_leads/storeLead',
+        'Api_auth/send_otp',
+        'Api_auth/validate_otp',
+        'Api_auth/register',
+        'Api_auth/login'
 );
 
 /*
